@@ -36,35 +36,46 @@ A cross-platform automation tool built with **.NET (C#)** that syncs competitive
       }
    }
 
-   # 🔐 Step 3: Get Google Credentials
+### 🔐 Step 3: Get Google Credentials
+To keep your Google Calendar secure, you must generate your own Access Key from Google.
 
-To keep your Google Calendar secure, you must generate your own **Access Key** from Google.
+- A. Go to Google Cloud Console
+Visit the Google Cloud Console
 
-## 🛠️ Google Cloud Setup
+Click Create Project (top bar) and name it ContestBot
 
-1. Go to the **Google Cloud Console**.
-2. Create a **New Project** and name it **ContestBot**.
-3. In the search bar, search for **Google Calendar API** and click **Enable**.
-4. Navigate to **Credentials** (left menu).
-5. Click **Create Credentials** → **OAuth Client ID**.
+Click Select Project to switch to your new project
 
-### 🧾 Configure Consent Screen
-If prompted:
-- Choose **External**
-- Enter your email address
-- Save and continue
+- B. Enable Google Calendar API
+In the search bar at the top, type "Google Calendar API"
 
-### 🔑 Create OAuth Credentials
-- **Application Type:** Desktop App  
-- Click **Create**
-- Download the generated JSON file
+Click on it from the results
 
-⚠️ **Important:**  
-Rename the downloaded file to:
+Click Enable
 
-```text
-credentials.json
-```
+- C. Create OAuth Credentials
+Navigate to Credentials (in the left menu)
+
+Click Create Credentials → Select OAuth Client ID
+
+- D. Configure Consent Screen (If asked)
+Choose External
+
+Enter your email address
+
+Click Save and Continue (you can skip the other steps for now)
+
+- E. Create The Desktop App Key
+Application Type: Select Desktop App
+
+Click Create
+
+A popup will appear. Click Download JSON (the download icon)
+
+- F. Place the File
+Rename the downloaded file to exactly: credentials.json
+
+Move this file into your ContestCalendar folder (The same folder where ContestCalendarCS.exe is located).
 
 
 ### ▶️ How to Run
