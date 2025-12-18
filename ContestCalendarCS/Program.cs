@@ -21,12 +21,23 @@ class Program
     {
         
         LoadConfiguration();
+
+        var options = ParseArgs(args);
+        
         
         Console.WriteLine("Trying To Fetching contests from Clist...");
         try
         {
-            var contests = await GetContestsAsync();
+            var contests = await GetContestsAsync(options.Platforms);
             Console.WriteLine($"Fetched {contests.Count} contests.");
+
+            if (options.DryRun)
+            {
+                Console.WriteLine("DRY RUN MODE");
+                foreach (var c in contests)
+                    Console.WriteLine($"{c.EventName} | {c.Start}");
+                return;
+            }
             
             Console.WriteLine("Authenticating with Google...");
             var service = await GetCalendarServiceAsync();
@@ -36,8 +47,9 @@ class Program
             {
                 await AddEventAsync(service, contest);
             }
-
-            Console.WriteLine("Done.. See You In Next Time :)");
+           
+            Console.WriteLine($"Done... This At  {DateTime.Now.ToString()}");
+            Console.WriteLine("------------------------------------");
         }
         catch (Exception ex)
         {
@@ -132,13 +144,15 @@ class Program
         });
     }
 
-    private static async Task<List<ContestObject>> GetContestsAsync()
+    private static async Task<List<ContestObject>> GetContestsAsync(HashSet<int>platforms)
     {
         using (var client = new HttpClient())
         {
             client.DefaultRequestHeaders.Add("Authorization", $"ApiKey {API_KEY}");
             
-            var resourceIdsStr = string.Join(",", RESOURCE_IDS);
+            var resourceIdsStr =platforms.Any() ? 
+                string.Join(",",platforms) :
+                string.Join(",", RESOURCE_IDS);
             
             var nowStr = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss");
             
@@ -158,7 +172,31 @@ class Program
             return data?.Objects ?? new List<ContestObject>();
         }   
     }
-    
+
+    static CliOptions ParseArgs(string[] args)
+    {
+        var options = new CliOptions();
+
+        for (int i = 0; i < args.Length; ++i)
+        {
+            if (args[i] == "--dry-run")
+                options.DryRun = true;
+            if (args[i] == "--platform" && i + 1 < args.Length)
+            {
+                var names = args[i + 1].Split(',');
+                foreach (var name in names)
+                {
+                    if (name == "CF") options.Platforms.Add(1);
+                    if (name == "LC") options.Platforms.Add(102);
+                    if (name == "AC") options.Platforms.Add(93);
+                    if (name == "CC") options.Platforms.Add(2);
+                }
+            }
+        }
+
+        return options;
+    }
+
     public class ClistResponse
     {
         [JsonProperty("objects")]
@@ -180,6 +218,11 @@ class Program
 
         [JsonProperty("end")]
         public string End { get; set; }
+    }
+    class CliOptions
+    {
+        public bool DryRun { get; set; }
+        public HashSet<int> Platforms { get; set; } = new();
     }
     
 }
