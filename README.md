@@ -123,6 +123,10 @@ crontab -e
 ```
 *(The sleep 60 ensures Wi-Fi is connected before the script runs.)*
 
+<p align="center">
+  <img src="./Google Calander.png" alt="How It Looks="850"/> 
+</p>
+
 
 ### ❤️ Contributing
 
